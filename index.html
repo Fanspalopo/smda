@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Voting OSIS dan MPK</title>
+</head>
+<body>
+    <header>
+        <h1>Website Voting Ketua OSIS & MPK</h1>
+    </header>
+
+    <section id="voting-osis">
+        <h2>Pilih Pasangan Calon Ketua dan Wakil Ketua OSIS</h2>
+        <form id="voting-form">
+            <div class="candidate">
+                <input type="radio" id="osis1" name="osis" value="Paslon 1">
+                <label for="osis1">
+                    <p>Paslon 1: SINERGI</p>
+                </label>
+            </div>
+            <div class="candidate">
+                <input type="radio" id="osis2" name="osis" value="Paslon 2">
+                <label for="osis2">
+                    <p>Paslon 2: INOVASI</p>
+                </label>
+            </div>
+            <div class="candidate">
+                <input type="radio" id="osis3" name="osis" value="Paslon 3">
+                <label for="osis3">
+                    <p>Paslon 3: SMART</p>
+                </label>
+            </div>
+        </form>
+    </section>
+
+    <section id="voting-mpk">
+        <h2>Pilih Pasangan Calon Ketua dan Wakil Ketua MPK</h2>
+        <form id="voting-mpk-form">
+            <div class="candidate">
+                <input type="radio" id="mpk1" name="mpk" value="Paslon 1">
+                <label for="mpk1">
+                    <p>Paslon 1: ASPIRATIF</p>
+                </label>
+            </div>
+            <div class="candidate">
+                <input type="radio" id="mpk2" name="mpk" value="Paslon 2">
+                <label for="mpk2">
+                    <p>Paslon 2: INTEGRITAS</p>
+                </label>
+            </div>
+        </form>
+    </section>
+
+    <footer>
+        <button id="submit-vote" onclick="submitVote()">Kirim Vote</button>
+    </footer>
+
+    <div id="vote-result" class="hidden">
+        <h2>Hasil Voting</h2>
+        <p id="osis-result">Hasil OSIS: </p>
+        <p id="mpk-result">Hasil MPK: </p>
+    </div>
+
+  <script>
+        async function submitVote() {
+            let osisVote = document.querySelector('input[name="osis"]:checked');
+            let mpkVote = document.querySelector('input[name="mpk"]:checked');
+
+            if (osisVote && mpkVote) {
+                const response = await fetch('https://script.google.com/macros/s/AKfycbxriqGXH3pKauRcLxBosljQz3ZxXCDYfRDoijMgdxpe7ktjFA_u6CK2del6_Iv365HD/exec', {
+                    method: 'POST',
+                    body: new URLSearchParams({
+                        'osis_vote': osisVote.value,
+                        'mpk_vote': mpkVote.value
+                    })
+                });
+
+                if (response.ok) {
+                    document.getElementById("voting-osis").style.display = 'none';
+                    document.getElementById("voting-mpk").style.display = 'none';
+                    document.getElementById("submit-vote").style.display = 'none';
+                    document.getElementById("vote-result").style.display = 'block';
+
+                    document.getElementById("osis-result").textContent = "Hasil OSIS: " + osisVote.value;
+                    document.getElementById("mpk-result").textContent = "Hasil MPK: " + mpkVote.value;
+
+                    setTimeout(function() {
+                        window.location.href = "thank-you.html"; 
+                    }, 2000);
+                } else {
+                    console.error("Terjadi kesalahan saat mengirimkan vote.");
+                }
+            } else {
+                alert("Anda harus memilih pasangan calon untuk OSIS dan MPK!");
+            }
+        }
+    </script>
+</body>
+</html>
